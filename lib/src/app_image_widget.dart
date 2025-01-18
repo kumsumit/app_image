@@ -18,6 +18,7 @@ class AppImageWidget extends StatelessWidget {
   final Widget? errorWidget;
   final Duration fadeInDuration;
   final Curve fadeInCurve;
+  final AppBar? appBar;
 
   /// Constructor for the image widget.
   ///
@@ -38,46 +39,39 @@ class AppImageWidget extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.placeHolderWidget,
     this.errorWidget,
+    this.appBar,
     required this.fadeInDuration,
     required this.fadeInCurve,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Determine the type of image provider based on the image source.
-    ImgProvider? provider = getImageProvider(image);
-
-    // Display the appropriate image widget based on the provider type.
-    if (provider == ImgProvider.networkImage) {
-      return _networkImage();
-    }
-
-    if (provider == ImgProvider.assetImage) {
-      return _assetImage();
-    }
-
-    if (provider == ImgProvider.fileImage) {
-      return _fileImage();
-    }
-
-    if (provider == ImgProvider.memoryImage) {
-      return _memoryImage();
-    }
-
-    if (provider == ImgProvider.svgImageNetwork) {
-      return _svgImageNetwork();
-    }
-
-    if (provider == ImgProvider.svgImageFile) {
-      return _svgImageFile();
-    }
-
-    if (provider == ImgProvider.svgImageAsset) {
-      return _svgImageAsset();
-    }
-
-    // Return an error widget if no valid provider type is found.
-    return _errorWidget();
+    return Scaffold(
+      appBar: appBar,
+      body: Builder(builder: (context) {
+        // Determine the type of image provider based on the image source.
+        ImgProvider? provider = getImageProvider(image);
+        // Display the appropriate image widget based on the provider type.
+        switch (provider) {
+          case ImgProvider.networkImage:
+            return _networkImage();
+          case ImgProvider.assetImage:
+            return _assetImage();
+          case ImgProvider.fileImage:
+            return _fileImage();
+          case ImgProvider.memoryImage:
+            return _memoryImage();
+          case ImgProvider.svgImageNetwork:
+            return _svgImageNetwork();
+          case ImgProvider.svgImageFile:
+            return _svgImageFile();
+          case ImgProvider.svgImageAsset:
+            return _svgImageAsset();
+          default:
+            return _errorWidget();
+        }
+      }),
+    );
   }
 
   // Widget for displaying a network image.
